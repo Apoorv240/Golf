@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "window.h": "c",
+        "golfball.h": "c"
+    }
+}
