@@ -3,12 +3,18 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "collision.h"
 
 struct {
     const int width;
     const int height;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    
+    ColliderBox colliderBoxTop;
+    ColliderBox colliderBoxBottom;
+    ColliderBox ColliderBoxLeft;
+    ColliderBox colliderBoxRight;
 } typedef Window;
 
 int initWindow(Window* window);

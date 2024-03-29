@@ -1,11 +1,16 @@
 #include "golfball.h"
 
 void initGolfball(Golfball* golfball) {
+    bool moving = false;
+    bool scored = false;
+
     createTexture(&golfball->texture, 30, 30, (int)golfball->x, (int)golfball->y);
+    updateColliderBoxFromRect(&golfball->colliderBox, golfball->texture.textureRect);
 }
 
 void renderGolfBall(Golfball* golfball) {
     setTexturePosition(&golfball->texture, 30, 30, (int)golfball->x, (int)golfball->y);
+    updateColliderBoxFromRect(&golfball->colliderBox, golfball->texture.textureRect);
     displayTexture(&golfball->texture);
 }
 

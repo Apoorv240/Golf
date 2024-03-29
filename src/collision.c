@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-void initColliderBoxFromRect(ColliderBox* colliderBox, SDL_Rect rect) {
+void updateColliderBoxFromRect(ColliderBox* colliderBox, SDL_Rect rect) {
     colliderBox->x = rect.x;
     colliderBox->y = rect.y;
     colliderBox->h = rect.h;
@@ -10,7 +10,7 @@ void initColliderBoxFromRect(ColliderBox* colliderBox, SDL_Rect rect) {
     //printf("%.2f, %.2f\n", (double)rect.x, (double)rect.w);
 }
 
-void initColliderBox(ColliderBox* colliderBox, int x, int y, int w, int h) {
+void updateColliderBox(ColliderBox* colliderBox, int x, int y, int w, int h) {
     colliderBox->x = x;
     colliderBox->y = y;
     colliderBox->h = h;

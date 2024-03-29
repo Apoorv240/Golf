@@ -6,12 +6,7 @@ int elapsedTime;
 int lastFrameTimeElapsed;
 double deltaTime;
 
-Hole hole;
-ColliderBox c1;
-ColliderBox c2;
-
 void init(Window* window, Entities* entities) {
-    entities->golfball.texture.texture = NULL;
     entities->golfball.texture.renderer = window->renderer;
     entities->golfball.texture.imagePath = "image.png";
 
@@ -22,10 +17,6 @@ void init(Window* window, Entities* entities) {
     entities->golfball.x = 400;
     entities->golfball.y = 400;
 
-    entities->golfball.moving = false;
-    entities->golfball.scored = false;
-
-    entities->hole.texture.texture = NULL;
     entities->hole.texture.renderer = window->renderer;
     entities->hole.texture.imagePath = "hole.png";
     entities->hole.x = 175;
@@ -43,22 +34,15 @@ void init(Window* window, Entities* entities) {
     entities->guide.vector.magnitude = 50;
     entities->guide.vector.theta = 30;
 
+    entities->collisionDetector.c0 = entities->golfball.colliderBox;
+    entities->collisionDetector.c1 = window->colliderBoxBottom;
+    entities->collisionDetector.c2 = window->colliderBoxRight;
+    entities->collisionDetector.c3 = window->colliderBoxTop;
+    entities->collisionDetector.c4 = window->ColliderBoxLeft;
 
     initGolfball(&entities->golfball);
     initHole(&entities->hole);
     initGuide(&entities->guide);
-
-
-
-    initColliderBoxFromRect(&c1, entities->golfball.texture.textureRect);
-    
-    hole.texture.renderer = window->renderer;
-    hole.texture.imagePath = "hole.png";
-    hole.x = 300;
-    hole.y = 300;
-    initHole(&hole);
-
-    initColliderBoxFromRect(&c2, hole.texture.textureRect);
 }
 
 bool mouseDown = false;
@@ -84,14 +68,22 @@ void handleEvent(SDL_Event e, Entities* entities) {
 }
 
 void loop(Window* window, Entities* entities) {
-    // elapsedTime = SDL_GetTicks();
+    elapsedTime = SDL_GetTicks();
 
-    // moveGolfBall(&entities->golfball, 
-    //                 vectorCalcX(entities->golfball.velo) * deltaTime, 
-    //                 vectorCalcY(entities->golfball.velo) * deltaTime,
-    //                 entities->golfball.accel * deltaTime);
+    moveGolfBall(&entities->golfball, 
+                    vectorCalcX(entities->golfball.velo) * deltaTime, 
+                    vectorCalcY(entities->golfball.velo) * deltaTime,
+                    entities->golfball.accel * deltaTime);
 
-    // if (entities->golfball.velo.magnitude <= 0) stopGolfBall(&entities->golfball);
+    if (entities->golfball.velo.magnitude <= 0) stopGolfBall(&entities->golfball);
+
+    if (detectCollision(&entities->collisionDetector) == 1) {
+        entities->golfball.velo.theta = 360 - entities->golfball.velo.theta;
+        entities->golfball.y = bounds(2, window->height - entities->golfball.texture.textureRect.h - 2, entities->golfball.y);
+    } else if (detectCollision(&entities->collisionDetector) == 2) {
+        entities->golfball.velo.theta = 180 - entities->golfball.velo.theta;
+        entities->golfball.x = bounds(2, window->width - entities->golfball.texture.textureRect.h - 2, entities->golfball.x);
+    }
 
     // if (checkGolfBallCollisionY(&entities->golfball, 0, window->height)) {
     //     entities->golfball.velo.theta = 360 - entities->golfball.velo.theta;
@@ -102,40 +94,43 @@ void loop(Window* window, Entities* entities) {
     //     entities->golfball.x = bounds(1, window->width - entities->golfball.texture.textureRect.h - 1, entities->golfball.x);
     // }
 
-    // if (!entities->golfball.scored && checkGolfBallCollisionHole(&entities->golfball, entities->hole.texture.textureRect.x, entities->hole.texture.textureRect.y, entities->hole.texture.textureRect.w, entities->hole.texture.textureRect.h)) {
-    //     entities->golfball.scored = true;
-    //     entities->golfball.velo.theta = vectorCalcTheta(entities->hole.x-entities->golfball.x, entities->golfball.y-entities->hole.y);
-    // }
-    // if (entities->golfball.scored && checkGolfBallScored(&entities->golfball, entities->hole.texture.textureRect.x, entities->hole.texture.textureRect.y, entities->hole.texture.textureRect.w, entities->hole.texture.textureRect.h)) {
-    //     stopGolfBall(&entities->golfball);
-    // }
+    if (!entities->golfball.scored && checkGolfBallCollisionHole(&entities->golfball, entities->hole.texture.textureRect.x, entities->hole.texture.textureRect.y, entities->hole.texture.textureRect.w, entities->hole.texture.textureRect.h)) {
+        entities->golfball.scored = true;
+        entities->golfball.velo.theta = vectorCalcTheta(entities->hole.x-entities->golfball.x, entities->golfball.y-entities->hole.y);
+    }
+    if (entities->golfball.scored && checkGolfBallScored(&entities->golfball, entities->hole.texture.textureRect.x, entities->hole.texture.textureRect.y, entities->hole.texture.textureRect.w, entities->hole.texture.textureRect.h)) {
+        stopGolfBall(&entities->golfball);
+    }
 
 
-    // if (mouseDown) {
-    //     SDL_GetMouseState(&mouseXf, &mouseYf);
-    //     entities->guide.enabled = true;
-    //     entities->guide.startX = entities->golfball.x + entities->golfball.texture.textureRect.w/2 - 5;
-    //     entities->guide.startY = entities->golfball.y + entities->golfball.texture.textureRect.h/2 - 5;
-    //     entities->guide.vector.magnitude = bounds(0, 120, sqrt(pow(mouseXf - mouseXi, 2) + pow(mouseYf - mouseYi, 2)));
-    //     entities->guide.vector.theta = -vectorCalcTheta(-(mouseXf - mouseXi), mouseYf - mouseYi);
-    // } else {
-    //     entities->guide.enabled = false;
-    // }
+    if (mouseDown) {
+        SDL_GetMouseState(&mouseXf, &mouseYf);
+        entities->guide.enabled = true;
+        entities->guide.startX = entities->golfball.x + entities->golfball.texture.textureRect.w/2 - 5;
+        entities->guide.startY = entities->golfball.y + entities->golfball.texture.textureRect.h/2 - 5;
+        entities->guide.vector.magnitude = bounds(0, 120, sqrt(pow(mouseXf - mouseXi, 2) + pow(mouseYf - mouseYi, 2)));
+        entities->guide.vector.theta = -vectorCalcTheta(-(mouseXf - mouseXi), mouseYf - mouseYi);
+    } else {
+        entities->guide.enabled = false;
+    }
     
-    // render(window, entities);
-    // deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.01;
-    // lastFrameTimeElapsed = elapsedTime;
-
-    int x;
-    int y;
-    SDL_GetMouseState(&x, &y);
-    entities->golfball.x = x;
-    entities->golfball.y = y;
-    c1.x = x;
-    c1.y = y;
-    if (checkCollision(&c1, &c2) == 1) printf("collidedX\n");
-    if (checkCollision(&c1, &c2) == 2) printf("collidedY\n");
     render(window, entities);
+    deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.01;
+    lastFrameTimeElapsed = elapsedTime;
+
+
+    entities->collisionDetector.c0 = entities->golfball.colliderBox;
+
+
+    //////////////////////////////////////////
+    // int x;
+    // int y;
+    // SDL_GetMouseState(&x, &y);
+    // entities->golfball.x = x;
+    // entities->golfball.y = y;
+    // if (checkCollision(&entities->golfball.colliderBox, &window->colliderBoxTop) == 1) printf("collidedX\n");
+    // if (checkCollision(&entities->golfball.colliderBox, &window->colliderBoxRight) == 2) printf("collidedY\n");
+    // render(window, entities);
 }
 
 void render(Window* window, Entities* entities) {
@@ -144,8 +139,6 @@ void render(Window* window, Entities* entities) {
     renderHole(&entities->hole);
     renderGolfBall(&entities->golfball);
     renderGuide(&entities->guide);
-
-    renderHole(&hole);
 
     SDL_RenderPresent(window->renderer);
 }

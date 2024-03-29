@@ -4,11 +4,14 @@
 #include "hole.h"
 #include "window.h"
 #include "guide.h"
+#include "collisionDetector.h"
 
 struct {
     Golfball golfball;
     Hole hole;
     Guide guide;
+
+    CollisionDetector collisionDetector;
 } typedef Entities;
 
 void init(Window* window, Entities* entities);

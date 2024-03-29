@@ -23,6 +23,10 @@ int initWindow(Window* window) {
         return -1;
     }
 
+    updateColliderBox(&window->colliderBoxTop, 0, 0, window->width, 1);
+    updateColliderBox(&window->ColliderBoxLeft, 0, 0, 1, window->height);
+    updateColliderBox(&window->colliderBoxBottom, 0, window->height - 1, window->width, 1);
+    updateColliderBox(&window->colliderBoxRight, window->width - 1, 0, 1, window->height);
     return 0;
 }
 

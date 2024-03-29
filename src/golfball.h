@@ -2,6 +2,7 @@
 
 #include "texture.h"
 #include "util.h"
+#include "collision.h"
 
 struct {
     double accel;
@@ -14,6 +15,7 @@ struct {
     bool scored;
 
     Texture texture;
+    ColliderBox colliderBox;
 } typedef Golfball;
 
 void initGolfball(Golfball* golfball);
