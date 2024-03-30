@@ -34,7 +34,7 @@ int checkCollision(ColliderBox* box1, ColliderBox* box2) {
     int box2t = box2->y;
     int box2b = box2->y + box2->h;
 
-    //printf("%.2f : %.2f", (float)box1l, (double)box1r);
+    
     //printf("|||||%.2f : %.2f \n", (float)box2l, (double)box2r);
 
     bool collisionX = false;
@@ -71,5 +71,6 @@ int checkCollision(ColliderBox* box1, ColliderBox* box2) {
     if (bdiff > maxNum) { maxNum = bdiff; max = 3; }
 
     if (max == 0 || max == 1) return 1;
+    if (box2l < 100) printf("%.2f : %.2f : %.2f : %.2f \n", (float)box2l, (double)box2r, (float)box2t, (float)box2b);
     return 2;
 }

@@ -10,11 +10,6 @@ struct {
     const int height;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    
-    ColliderBox colliderBoxTop;
-    ColliderBox colliderBoxBottom;
-    ColliderBox ColliderBoxLeft;
-    ColliderBox colliderBoxRight;
 } typedef Window;
 
 int initWindow(Window* window);

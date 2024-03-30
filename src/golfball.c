@@ -23,11 +23,11 @@ bool checkGolfBallCollisionX(Golfball* golfball, int leftBound, int rightBound) 
 }
 
 bool checkGolfBallCollisionHole(Golfball* golfball, int holeX, int holeY, int holeW, int holeH) {
-    return (inBounds(holeY, holeY + holeH, golfball->y) && inBounds(holeX, holeX + holeW, golfball->x));
+    return (checkIfInBounds(holeY, holeY + holeH, golfball->y) && checkIfInBounds(holeX, holeX + holeW, golfball->x));
 }
 
 bool checkGolfBallScored(Golfball* golfball, int holeX, int holeY, int holeW, int holeH) {
-    return (inBounds(holeY-2, holeY+2, golfball->y) && inBounds(holeX-2, holeX+2, golfball->x));
+    return (checkIfInBounds(holeY-2, holeY+2, golfball->y) && checkIfInBounds(holeX-2, holeX+2, golfball->x));
 }
 
 void moveGolfBall(Golfball* golfball, double deltaX, double deltaY, double deltaVeloMag) {

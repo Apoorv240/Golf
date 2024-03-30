@@ -14,8 +14,8 @@ void init(Window* window, Entities* entities) {
     entities->golfball.velo.magnitude = 0;//50;
     entities->golfball.velo.theta = 30;
 
-    entities->golfball.x = 400;
-    entities->golfball.y = 400;
+    entities->golfball.x = 500;
+    entities->golfball.y = 300;
 
     entities->hole.texture.renderer = window->renderer;
     entities->hole.texture.imagePath = "hole.png";
@@ -34,15 +34,27 @@ void init(Window* window, Entities* entities) {
     entities->guide.vector.magnitude = 50;
     entities->guide.vector.theta = 30;
 
-    entities->collisionDetector.c0 = entities->golfball.colliderBox;
-    entities->collisionDetector.c1 = window->colliderBoxBottom;
-    entities->collisionDetector.c2 = window->colliderBoxRight;
-    entities->collisionDetector.c3 = window->colliderBoxTop;
-    entities->collisionDetector.c4 = window->ColliderBoxLeft;
+    entities->obstacle.texture.imagePath = "square.png";
+    entities->obstacle.texture.renderer = window->renderer;
+    entities->obstacle.x = 400;
+    entities->obstacle.y = 100;
+
+    entities->obstacle2.texture.imagePath = "square.png";
+    entities->obstacle2.texture.renderer = window->renderer;
+    entities->obstacle2.x = 100;
+    entities->obstacle2.y = 300;
 
     initGolfball(&entities->golfball);
     initHole(&entities->hole);
     initGuide(&entities->guide);
+    initObstacle(&entities->obstacle);
+    initObstacle(&entities->obstacle2);
+    
+    initCollisionDetector(&entities->collisionDetector);
+    entities->collisionDetector.c0 = entities->golfball.colliderBox;
+    addCollider(&entities->collisionDetector, &entities->obstacle.colliderBox);
+    addCollider(&entities->collisionDetector, &entities->obstacle2.colliderBox);
+    //entities->collisionDetector.c1 = entities->obstacle.colliderBox;
 }
 
 bool mouseDown = false;
@@ -77,22 +89,30 @@ void loop(Window* window, Entities* entities) {
 
     if (entities->golfball.velo.magnitude <= 0) stopGolfBall(&entities->golfball);
 
-    if (detectCollision(&entities->collisionDetector) == 1) {
+    if (checkGolfBallCollisionY(&entities->golfball, 0, window->height)) {
         entities->golfball.velo.theta = 360 - entities->golfball.velo.theta;
-        entities->golfball.y = bounds(2, window->height - entities->golfball.texture.textureRect.h - 2, entities->golfball.y);
-    } else if (detectCollision(&entities->collisionDetector) == 2) {
+        entities->golfball.y = bounds(1, window->height - entities->golfball.texture.textureRect.h - 1, entities->golfball.y);
+    }
+    if (checkGolfBallCollisionX(&entities->golfball, 0, window->width)) {
         entities->golfball.velo.theta = 180 - entities->golfball.velo.theta;
-        entities->golfball.x = bounds(2, window->width - entities->golfball.texture.textureRect.h - 2, entities->golfball.x);
+        entities->golfball.x = bounds(1, window->width - entities->golfball.texture.textureRect.h - 1, entities->golfball.x);
     }
 
-    // if (checkGolfBallCollisionY(&entities->golfball, 0, window->height)) {
-    //     entities->golfball.velo.theta = 360 - entities->golfball.velo.theta;
-    //     entities->golfball.y = bounds(1, window->height - entities->golfball.texture.textureRect.h - 1, entities->golfball.y);
-    // }
-    // if (checkGolfBallCollisionX(&entities->golfball, 0, window->width)) {
-    //     entities->golfball.velo.theta = 180 - entities->golfball.velo.theta;
-    //     entities->golfball.x = bounds(1, window->width - entities->golfball.texture.textureRect.h - 1, entities->golfball.x);
-    // }
+    if (detectCollision(&entities->collisionDetector) == 2) {
+        entities->golfball.velo.theta = 360 - entities->golfball.velo.theta;
+        entities->golfball.y = outsideBounds(
+            entities->collisionDetector.justCollided->y - entities->golfball.colliderBox.h - 2, 
+            entities->collisionDetector.justCollided->y + entities->collisionDetector.justCollided->h + 2,
+            entities->golfball.y
+        );
+    } else if (detectCollision(&entities->collisionDetector) == 1) {
+        entities->golfball.velo.theta = 180 - entities->golfball.velo.theta;
+        entities->golfball.x = outsideBounds(
+            entities->collisionDetector.justCollided->x - entities->golfball.colliderBox.w - 2, 
+            entities->collisionDetector.justCollided->x + entities->collisionDetector.justCollided->w + 2,
+            entities->golfball.x
+        );
+    }
 
     if (!entities->golfball.scored && checkGolfBallCollisionHole(&entities->golfball, entities->hole.texture.textureRect.x, entities->hole.texture.textureRect.y, entities->hole.texture.textureRect.w, entities->hole.texture.textureRect.h)) {
         entities->golfball.scored = true;
@@ -118,27 +138,18 @@ void loop(Window* window, Entities* entities) {
     deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.01;
     lastFrameTimeElapsed = elapsedTime;
 
-
     entities->collisionDetector.c0 = entities->golfball.colliderBox;
-
-
-    //////////////////////////////////////////
-    // int x;
-    // int y;
-    // SDL_GetMouseState(&x, &y);
-    // entities->golfball.x = x;
-    // entities->golfball.y = y;
-    // if (checkCollision(&entities->golfball.colliderBox, &window->colliderBoxTop) == 1) printf("collidedX\n");
-    // if (checkCollision(&entities->golfball.colliderBox, &window->colliderBoxRight) == 2) printf("collidedY\n");
-    // render(window, entities);
 }
 
 void render(Window* window, Entities* entities) {
     SDL_RenderClear(window->renderer);
 
+    renderObstacle(&entities->obstacle);
+    renderObstacle(&entities->obstacle2);
     renderHole(&entities->hole);
     renderGolfBall(&entities->golfball);
     renderGuide(&entities->guide);
+    
 
     SDL_RenderPresent(window->renderer);
 }

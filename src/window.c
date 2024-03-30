@@ -22,15 +22,12 @@ int initWindow(Window* window) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
-
-    updateColliderBox(&window->colliderBoxTop, 0, 0, window->width, 1);
-    updateColliderBox(&window->ColliderBoxLeft, 0, 0, 1, window->height);
-    updateColliderBox(&window->colliderBoxBottom, 0, window->height - 1, window->width, 1);
-    updateColliderBox(&window->colliderBoxRight, window->width - 1, 0, 1, window->height);
+    
     return 0;
 }
 
 int runWindow(Window* window) {
+    // width = 800, height=600
     SDL_RenderSetLogicalSize(window->renderer, window->width, window->height);
     SDL_SetRenderDrawColor(window->renderer, 56, 128, 4, 255);//124, 252, 0, 255);
     SDL_RenderClear(window->renderer);

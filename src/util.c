@@ -7,7 +7,13 @@ double bounds(double low, double high, double num) {
     return num;
 }
 
-bool inBounds(double low, double high, double num) {
+double outsideBounds(double low, double high, double num) {
+    if (num < high && (num > (high+low)/2)) return high;
+    if (num > low && (num < (high+low)/2)) return low;
+    return num;
+}
+
+bool checkIfInBounds(double low, double high, double num) {
     if ((num <= high) && (num >= low)) return true;
     return false;
 }

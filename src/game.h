@@ -5,11 +5,14 @@
 #include "window.h"
 #include "guide.h"
 #include "collisionDetector.h"
+#include "obstacle.h"
 
 struct {
     Golfball golfball;
     Hole hole;
     Guide guide;
+    Obstacle obstacle;
+    Obstacle obstacle2;
 
     CollisionDetector collisionDetector;
 } typedef Entities;

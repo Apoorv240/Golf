@@ -1,21 +1,25 @@
 #include "collisionDetector.h"
 #include <stdio.h>
 
+void initCollisionDetector(CollisionDetector* collisionDetector) {
+    collisionDetector->numColliders = 0;
+}
+
 int detectCollision(CollisionDetector* collisionDetector) {
-    int collision1;
-    int collision2;
-    int collision3;
-    int collision4;
+    for (int i = 0; i < collisionDetector->numColliders; i++) {
+        printf("%i\n", i);
 
-    collision1 = checkCollision(&collisionDetector->c0, &collisionDetector->c1);
-    collision2 = checkCollision(&collisionDetector->c0, &collisionDetector->c2);
-    collision3 = checkCollision(&collisionDetector->c0, &collisionDetector->c3);
-    collision4 = checkCollision(&collisionDetector->c0, &collisionDetector->c4);
+        int collision = checkCollision(&collisionDetector->c0, collisionDetector->colliders[i]);
+        if (collision != 0) {
+            collisionDetector->justCollided = collisionDetector->colliders[i];
+            return collision;
+        }
+    }
+    return 0;
+}
 
-    printf("%i, %i, %i, %i\n", collision1, collision2, collision3, collision4);
-
-    if (collision1 != 0) return collision1;
-    if (collision2 != 0) return collision2;
-    if (collision3 != 0) return collision3;
-    if (collision4 != 0) return collision4;
+int addCollider(CollisionDetector* collisionDetector, ColliderBox* collider) {
+    collisionDetector->numColliders += 1;
+    collisionDetector->colliders[collisionDetector->numColliders-1] = collider;
+    return collisionDetector->numColliders - 1;
 }
