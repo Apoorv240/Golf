@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = src/main.c src/window.c src/texture.c src/golfball.c src/util.c src/hole.c src/game.c src/guide.c src/collision.c src/collisionDetector.c src/obstacle.c
+OBJS = src/main.c src/window.c src/texture.c src/golfball.c src/util.c src/hole.c src/game.c src/guide.c src/collision.c src/collisionDetector.c src/obstacle.c src/text.c
 
 #CC specifies which compiler we're using
 CC = gcc
@@ -16,7 +16,7 @@ LIBRARY_PATHS = -LC:\mingwlibs\lib
 COMPILER_FLAGS = 
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = Golf

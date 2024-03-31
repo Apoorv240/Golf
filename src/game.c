@@ -6,7 +6,10 @@ int elapsedTime;
 int lastFrameTimeElapsed;
 double deltaTime;
 
-void init(Window* window, Entities* entities) {
+int strokes;
+char strokeString[20];
+
+void initGame(Window* window, GameEntities* entities) {
     entities->golfball.texture.renderer = window->renderer;
     entities->golfball.texture.imagePath = "image.png";
 
@@ -44,6 +47,16 @@ void init(Window* window, Entities* entities) {
     entities->obstacle2.x = 100;
     entities->obstacle2.y = 300;
 
+    strokes = 0;
+    entities->strokeText.texture.renderer = window->renderer;
+    setTextFont(&entities->strokeText, "arial.ttf");
+    setTextColor(&entities->strokeText, 255, 255, 255, 255);
+    entities->strokeText.x = 10;
+    entities->strokeText.y = 10;
+    
+    sprintf(strokeString, "Strokes: %i", strokes);
+    setText(&entities->strokeText, strokeString);
+
     initGolfball(&entities->golfball);
     initHole(&entities->hole);
     initGuide(&entities->guide);
@@ -62,7 +75,7 @@ int mouseXi;
 int mouseYi;
 int mouseXf;
 int mouseYf;
-void handleEvent(SDL_Event e, Entities* entities) {
+void handleEventGame(SDL_Event e, GameEntities* entities) {
     if (e.type == SDL_MOUSEBUTTONDOWN && !entities->golfball.moving && !entities->golfball.scored) {
         printf("mousebuttondown");
         mouseDown = true;
@@ -76,10 +89,14 @@ void handleEvent(SDL_Event e, Entities* entities) {
         entities->golfball.velo.theta = vectorCalcTheta(-(mouseXf - mouseXi), mouseYf - mouseYi);
         entities->golfball.moving = true;
         entities->golfball.accel = -2;
+
+        strokes++;
+        sprintf(strokeString, "Strokes: %i", strokes);
+        setText(&entities->strokeText, strokeString);
     }
 }
 
-void loop(Window* window, Entities* entities) {
+void updateGame(Window* window, GameEntities* entities) {
     elapsedTime = SDL_GetTicks();
 
     moveGolfBall(&entities->golfball, 
@@ -134,18 +151,21 @@ void loop(Window* window, Entities* entities) {
         entities->guide.enabled = false;
     }
     
-    render(window, entities);
+    renderGame(window, entities);
     deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.01;
     lastFrameTimeElapsed = elapsedTime;
 
     entities->collisionDetector.c0 = entities->golfball.colliderBox;
 }
 
-void render(Window* window, Entities* entities) {
+void renderGame(Window* window, GameEntities* entities) {
     SDL_RenderClear(window->renderer);
 
     renderObstacle(&entities->obstacle);
     renderObstacle(&entities->obstacle2);
+
+    renderText(&entities->strokeText);
+
     renderHole(&entities->hole);
     renderGolfBall(&entities->golfball);
     renderGuide(&entities->guide);

@@ -6,6 +6,7 @@
 #include "guide.h"
 #include "collisionDetector.h"
 #include "obstacle.h"
+#include "text.h"
 
 struct {
     Golfball golfball;
@@ -13,11 +14,12 @@ struct {
     Guide guide;
     Obstacle obstacle;
     Obstacle obstacle2;
+    Text strokeText;
 
     CollisionDetector collisionDetector;
-} typedef Entities;
+} typedef GameEntities;
 
-void init(Window* window, Entities* entities);
-void loop(Window* window, Entities* entities);
-void render(Window* window, Entities* entities);
-void handleEvent(SDL_Event e, Entities* entities);
+void initGame(Window* window, GameEntities* entities);
+void updateGame(Window* window, GameEntities* entities);
+void renderGame(Window* window, GameEntities* entities);
+void handleEventGame(SDL_Event e, GameEntities* entities);

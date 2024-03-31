@@ -4,6 +4,7 @@
 #include "util.h"
 #include "hole.h"
 #include "game.h"
+#include "text.h"
 
 int initWindow(Window* window) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -22,6 +23,8 @@ int initWindow(Window* window) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
+
+    TTF_Init();
     
     return 0;
 }
@@ -33,19 +36,19 @@ int runWindow(Window* window) {
     SDL_RenderClear(window->renderer);
     SDL_RenderPresent(window->renderer);
 
-    Entities entities;
+    GameEntities entities;
 
-    init(window, &entities);
+    initGame(window, &entities);
 
     SDL_Event e; 
     bool quit = false; 
     while (quit == false) {
         while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) quit = true;
-            handleEvent(e, &entities);
+            handleEventGame(e, &entities);
         }
 
-        loop(window, &entities);        
+        updateGame(window, &entities);        
     }
 
     return 0;
