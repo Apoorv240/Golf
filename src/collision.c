@@ -7,7 +7,6 @@ void updateColliderBoxFromRect(ColliderBox* colliderBox, SDL_Rect rect) {
     colliderBox->y = rect.y;
     colliderBox->h = rect.h;
     colliderBox->w = rect.w;
-    //printf("%.2f, %.2f\n", (double)rect.x, (double)rect.w);
 }
 
 void updateColliderBox(ColliderBox* colliderBox, int x, int y, int w, int h) {
@@ -33,9 +32,6 @@ int checkCollision(ColliderBox* box1, ColliderBox* box2) {
     int box2r = box2->x + box2->w;
     int box2t = box2->y;
     int box2b = box2->y + box2->h;
-
-    
-    //printf("|||||%.2f : %.2f \n", (float)box2l, (double)box2r);
 
     bool collisionX = false;
     bool collisionY = false;
@@ -71,6 +67,5 @@ int checkCollision(ColliderBox* box1, ColliderBox* box2) {
     if (bdiff > maxNum) { maxNum = bdiff; max = 3; }
 
     if (max == 0 || max == 1) return 1;
-    if (box2l < 100) printf("%.2f : %.2f : %.2f : %.2f \n", (float)box2l, (double)box2r, (float)box2t, (float)box2b);
     return 2;
 }

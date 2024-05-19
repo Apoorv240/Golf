@@ -7,9 +7,8 @@ void initCollisionDetector(CollisionDetector* collisionDetector) {
 
 int detectCollision(CollisionDetector* collisionDetector) {
     for (int i = 0; i < collisionDetector->numColliders; i++) {
-        printf("%i\n", i);
 
-        int collision = checkCollision(&collisionDetector->c0, collisionDetector->colliders[i]);
+        int collision = checkCollision(collisionDetector->c0, collisionDetector->colliders[i]);
         if (collision != 0) {
             collisionDetector->justCollided = collisionDetector->colliders[i];
             return collision;

@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = src/main.c src/window.c src/texture.c src/golfball.c src/util.c src/hole.c src/game.c src/guide.c src/collision.c src/collisionDetector.c src/obstacle.c src/text.c
+OBJS = src/main.c src/window.c src/texture.c src/golfball.c src/util.c src/hole.c src/game.c src/guide.c src/collision.c src/collisionDetector.c src/obstacle.c src/text.c src/intro.c
 
 #CC specifies which compiler we're using
 CC = gcc

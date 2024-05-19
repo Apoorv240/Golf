@@ -5,6 +5,9 @@
 #include "hole.h"
 #include "game.h"
 #include "text.h"
+#include "intro.h"
+
+#include "SDL_filesystem.h"
 
 int initWindow(Window* window) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -25,6 +28,9 @@ int initWindow(Window* window) {
     }
 
     TTF_Init();
+
+    window->quit = false;
+    window->goToGame = false;
     
     return 0;
 }
@@ -36,18 +42,28 @@ int runWindow(Window* window) {
     SDL_RenderClear(window->renderer);
     SDL_RenderPresent(window->renderer);
 
-    GameEntities entities;
+    printf("%s", SDL_GetPrefPath("Golf", "Golf"));
 
-    initGame(window, &entities);
+    SDL_Event e;
 
-    SDL_Event e; 
-    bool quit = false; 
-    while (quit == false) {
+    IntroScreen introScreen;
+    initIntroScreen(window, &introScreen);
+    while (window->quit == false && window->goToGame == false) {
         while(SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) quit = true;
+            if (e.type == SDL_QUIT) window->quit = true;
+            handleEventIntroScreen(e, &introScreen, window);
+        }
+        updateIntroScreen(window, &introScreen);
+    }
+
+    GameEntities entities;
+    initGame(window, &entities);
+    while (window->quit == false) {
+        while(SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) window->quit = true;
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
             handleEventGame(e, &entities);
         }
-
         updateGame(window, &entities);        
     }
 

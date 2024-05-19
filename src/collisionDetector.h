@@ -5,13 +5,11 @@
 #define COLLISIONDETECTOR_ARRAY_SIZE 100
 
 struct {
-    ColliderBox c0;
+    ColliderBox* c0;
 
     ColliderBox* colliders[COLLISIONDETECTOR_ARRAY_SIZE];
     unsigned int numColliders;
     
-    ColliderBox c1;
-
     ColliderBox* justCollided;
 } typedef CollisionDetector;
 

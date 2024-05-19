@@ -11,9 +11,11 @@ struct {
 
     int x;
     int y;
+    int w;
+    int h;
 } typedef Text;
 
 void setTextColor(Text* text, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 void setText(Text* text, const char* t);
-void setTextFont(Text* text, const char* font);
+void setTextFont(Text* text, const char* font, int fontSize);
 void renderText(Text* text);

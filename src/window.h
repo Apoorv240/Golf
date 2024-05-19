@@ -10,6 +10,8 @@ struct {
     const int height;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    bool quit;
+    bool goToGame;
 } typedef Window;
 
 int initWindow(Window* window);

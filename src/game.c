@@ -49,7 +49,7 @@ void initGame(Window* window, GameEntities* entities) {
 
     strokes = 0;
     entities->strokeText.texture.renderer = window->renderer;
-    setTextFont(&entities->strokeText, "arial.ttf");
+    setTextFont(&entities->strokeText, "arial.ttf", 25);
     setTextColor(&entities->strokeText, 255, 255, 255, 255);
     entities->strokeText.x = 10;
     entities->strokeText.y = 10;
@@ -64,7 +64,7 @@ void initGame(Window* window, GameEntities* entities) {
     initObstacle(&entities->obstacle2);
     
     initCollisionDetector(&entities->collisionDetector);
-    entities->collisionDetector.c0 = entities->golfball.colliderBox;
+    entities->collisionDetector.c0 = &entities->golfball.colliderBox;
     addCollider(&entities->collisionDetector, &entities->obstacle.colliderBox);
     addCollider(&entities->collisionDetector, &entities->obstacle2.colliderBox);
     //entities->collisionDetector.c1 = entities->obstacle.colliderBox;
@@ -77,12 +77,10 @@ int mouseXf;
 int mouseYf;
 void handleEventGame(SDL_Event e, GameEntities* entities) {
     if (e.type == SDL_MOUSEBUTTONDOWN && !entities->golfball.moving && !entities->golfball.scored) {
-        printf("mousebuttondown");
         mouseDown = true;
         SDL_GetMouseState(&mouseXi, &mouseYi);
     }
     if (e.type == SDL_MOUSEBUTTONUP && mouseDown) {
-        printf("mousebuttonup");
         mouseDown = false;
         SDL_GetMouseState(&mouseXf, &mouseYf);
         entities->golfball.velo.magnitude = bounds(0, 120, sqrt(pow(mouseXf - mouseXi, 2) + pow(mouseYf - mouseYi, 2))) * 2 / 3;
@@ -154,8 +152,6 @@ void updateGame(Window* window, GameEntities* entities) {
     renderGame(window, entities);
     deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.01;
     lastFrameTimeElapsed = elapsedTime;
-
-    entities->collisionDetector.c0 = entities->golfball.colliderBox;
 }
 
 void renderGame(Window* window, GameEntities* entities) {

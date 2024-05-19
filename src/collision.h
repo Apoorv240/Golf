@@ -7,6 +7,7 @@ struct {
     int y;
     int w;
     int h;
+    int id;
 } typedef ColliderBox;
 
 void updateColliderBoxFromRect(ColliderBox* colliderBox, SDL_Rect rect);
